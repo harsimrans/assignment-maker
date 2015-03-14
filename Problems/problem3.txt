@@ -1,0 +1,7 @@
+
+Problem Statement:Implement a hello world program in Java.
+
+Output: your program should output "hello world" without the quotes
+
+Remember to name the program file as problem3.java in user_solutions directory
+otherwise solution will not be evaluated.

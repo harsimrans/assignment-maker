@@ -38,10 +38,11 @@ RUN_JAVA = 'java'
 
 
 def main():
-    print "------------------------"
-    print "*      Evaluating      *"
-    print "------------------------"
-    evaluate("./user_solution/");
+    print "--------------------------------------------"
+    print "*              Evaluating                  *"
+    print "--------------------------------------------\n"
+    evaluate(USER_SOLUTIONS)
+    return
 
 
 def evaluate(soln_direc):
@@ -50,20 +51,19 @@ def evaluate(soln_direc):
     solutions = os.listdir(soln_direc)
     #print "Solutions: ", solutions
     evaluations = []
-    clear_compiled_files(sol_direc_abs);
     for solution in solutions:
         #sol_location = os.path.join(sol_direc_abs, solution)
         #print sol_location
         #os.system("./tools/universal.py " + sol_location)
         if compile_files(sol_direc_abs, solution):
-            print solution + ": PASSED"
+            print solution + ": PASSED\n"
             evaluations.append("True")
         else:
-            print solution + ": FAILED"
+            print solution + ": FAILED\n"
             evaluations.append("False")
 
     clear_compiled_files(sol_direc_abs)
-    print "Results: ", evaluations
+    #print "Results: ", evaluations
     return
 
 def compile_files(path, filename):
@@ -125,7 +125,7 @@ def compile_files(path, filename):
         print "Unsupported file format"
 
 def clear_compiled_files(path):
-    print "clearing compiled files..."
+    print "Clearing compiled files generated during evaluating...\n"
     files = os.listdir(path)
     for file in files:
         ext = file.split(".")
