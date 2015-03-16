@@ -79,14 +79,14 @@ def compile_files(path, filename):
         #print command
         os.system(command)
 
-        command = output_file + " < " + MASTER_INPUT  + name + ".input" + " > " + USER_SOLUTIONS + name + ".output"
+        command = output_file + " < " + os.path.join(os.path.abspath(MASTER_INPUT),  name + ".input") + " > " + os.path.join(os.path.abspath(USER_SOLUTIONS), name + ".output")
         #print command
         os.system(command)
 
         # compare the output
         #command = "cmp --silent " + MASTER_SOLUTION + name + ".output" + " " + USER_SOLUTIONS + name + ".output"
         #print "comapring 2", MASTER_SOLUTION + name + ".output",  USER_SOLUTIONS + name + ".output"
-        return filecmp.cmp(MASTER_SOLUTION + name + ".output",  USER_SOLUTIONS + name + ".output", shallow=False)
+        return filecmp.cmp(os.path.join(os.path.abspath(MASTER_SOLUTION) , name + ".output"),  os.path.join(os.path.abspath(USER_SOLUTIONS) , name + ".output"), shallow=False)
 
 
         #output = subprocess.check_output(command, shell=True)
@@ -98,14 +98,16 @@ def compile_files(path, filename):
         #print command
         os.system(command)
 
-        command = output_file + " < " + MASTER_INPUT  + name + ".input" + " > " + USER_SOLUTIONS + name + ".output"
+
+        command = output_file + " < " + os.path.join(os.path.abspath(MASTER_INPUT),  name + ".input") + " > " + os.path.join(os.path.abspath(USER_SOLUTIONS), name + ".output")
         #print command
         os.system(command)
 
         # compare the output
         #command = "cmp --silent " + MASTER_SOLUTION + name + ".output" + " " + USER_SOLUTIONS + name + ".output"
         #print "comapring 2", MASTER_SOLUTION + name + ".output",  USER_SOLUTIONS + name + ".output"
-        return filecmp.cmp(MASTER_SOLUTION + name + ".output",  USER_SOLUTIONS + name + ".output", shallow=False)
+        return filecmp.cmp(os.path.join(os.path.abspath(MASTER_SOLUTION) , name + ".output"),  os.path.join(os.path.abspath(USER_SOLUTIONS) , name + ".output"), shallow=False)
+
 
     elif extension == 'java':
         input_file = os.path.join(path, filename)
@@ -113,16 +115,17 @@ def compile_files(path, filename):
         command = COMPILE_JAVA + ' ' + input_file
         #print command
         os.system(command)
-        command = RUN_JAVA + " -cp " + path + " " + name + " < " + MASTER_INPUT  + name + ".input" + " > " + USER_SOLUTIONS + name + ".output"
+        command = RUN_JAVA + " -cp " + path + " " + name + " < " + os.path.join(os.path.abspath(MASTER_INPUT) , name + ".input") + " > " + os.path.join(os.path.abspath(USER_SOLUTIONS) , name + ".output")
         #print command
 
         os.system(command)
         # compare the output
         #command = "cmp --silent " + MASTER_SOLUTION + name + ".output" + " " + USER_SOLUTIONS + name + ".output"
         #print "comapring 2", MASTER_SOLUTION + name + ".output",  USER_SOLUTIONS + name + ".output"
-        return filecmp.cmp(MASTER_SOLUTION + name + ".output",  USER_SOLUTIONS + name + ".output", shallow=False)
+        return filecmp.cmp(os.path.join(os.path.abspath(MASTER_SOLUTION) , name + ".output"),  os.path.join(os.path.abspath(USER_SOLUTIONS) , name + ".output"), shallow=False)
     else:
         print "Unsupported file format"
+        return False
 
 def clear_compiled_files(path):
     print "Clearing compiled files generated during evaluating...\n"
