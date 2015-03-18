@@ -42,19 +42,16 @@ def main():
     print "*              Evaluating                  *"
     print "--------------------------------------------\n"
     evaluate(USER_SOLUTIONS)
-    return
+    return 0
 
 
 def evaluate(soln_direc):
+    ''' Runs the evaluation of the user solutions
+    '''
     sol_direc_abs = os.path.abspath(soln_direc);
-    #print sol_direc_abs
     solutions = os.listdir(soln_direc)
-    #print "Solutions: ", solutions
     evaluations = []
     for solution in solutions:
-        #sol_location = os.path.join(sol_direc_abs, solution)
-        #print sol_location
-        #os.system("./tools/universal.py " + sol_location)
         if compile_files(sol_direc_abs, solution):
             print solution + ": PASSED\n"
             evaluations.append("True")
@@ -63,80 +60,75 @@ def evaluate(soln_direc):
             evaluations.append("False")
 
     clear_compiled_files(sol_direc_abs)
-    #print "Results: ", evaluations
     return
 
 def compile_files(path, filename):
-    #print "Print: ", os.getcwd()
+    ''' Compiles and runs user solution and tells
+        if the output matches the master solution
+
+        returns
+            True: If the files match
+            False: If the output files don't match
+    '''
     name, extension = filename.split(".")
     print "Compiling: ", filename
-    #print name, extension
 
     if extension == 'c':
         input_file = os.path.join(path, filename)
         output_file = os.path.join(path, name)
+
         command = COMPILE_C + ' ' + input_file + " -o " + output_file
-        #print command
         os.system(command)
 
         command = output_file + " < " + os.path.join(os.path.abspath(MASTER_INPUT),  name + ".input") + " > " + os.path.join(os.path.abspath(USER_SOLUTIONS), name + ".output")
-        #print command
         os.system(command)
 
         # compare the output
-        #command = "cmp --silent " + MASTER_SOLUTION + name + ".output" + " " + USER_SOLUTIONS + name + ".output"
-        #print "comapring 2", MASTER_SOLUTION + name + ".output",  USER_SOLUTIONS + name + ".output"
         return filecmp.cmp(os.path.join(os.path.abspath(MASTER_SOLUTION) , name + ".output"),  os.path.join(os.path.abspath(USER_SOLUTIONS) , name + ".output"), shallow=False)
 
 
-        #output = subprocess.check_output(command, shell=True)
-        #print "output: ", output
     elif extension == 'cpp':
         input_file = os.path.join(path, filename)
         output_file = os.path.join(path, name)
+
         command = COMPILE_CPP + ' ' + input_file + " -o " + output_file
-        #print command
         os.system(command)
 
-
         command = output_file + " < " + os.path.join(os.path.abspath(MASTER_INPUT),  name + ".input") + " > " + os.path.join(os.path.abspath(USER_SOLUTIONS), name + ".output")
-        #print command
         os.system(command)
 
         # compare the output
-        #command = "cmp --silent " + MASTER_SOLUTION + name + ".output" + " " + USER_SOLUTIONS + name + ".output"
-        #print "comapring 2", MASTER_SOLUTION + name + ".output",  USER_SOLUTIONS + name + ".output"
         return filecmp.cmp(os.path.join(os.path.abspath(MASTER_SOLUTION) , name + ".output"),  os.path.join(os.path.abspath(USER_SOLUTIONS) , name + ".output"), shallow=False)
 
 
     elif extension == 'java':
         input_file = os.path.join(path, filename)
         output_file = os.path.join(path, name)
-        command = COMPILE_JAVA + ' ' + input_file
-        #print command
-        os.system(command)
-        command = RUN_JAVA + " -cp " + path + " " + name + " < " + os.path.join(os.path.abspath(MASTER_INPUT) , name + ".input") + " > " + os.path.join(os.path.abspath(USER_SOLUTIONS) , name + ".output")
-        #print command
 
+        command = COMPILE_JAVA + ' ' + input_file
         os.system(command)
+
+        command = RUN_JAVA + " -cp " + path + " " + name + " < " + os.path.join(os.path.abspath(MASTER_INPUT) , name + ".input") + " > " + os.path.join(os.path.abspath(USER_SOLUTIONS) , name + ".output")
+        os.system(command)
+
         # compare the output
-        #command = "cmp --silent " + MASTER_SOLUTION + name + ".output" + " " + USER_SOLUTIONS + name + ".output"
-        #print "comapring 2", MASTER_SOLUTION + name + ".output",  USER_SOLUTIONS + name + ".output"
         return filecmp.cmp(os.path.join(os.path.abspath(MASTER_SOLUTION) , name + ".output"),  os.path.join(os.path.abspath(USER_SOLUTIONS) , name + ".output"), shallow=False)
+
     else:
         print "Unsupported file format"
         return False
 
 def clear_compiled_files(path):
+    ''' Clears all the output and class files
+        generated duruing the evaluation process
+    '''
     print "Clearing compiled files generated during evaluating...\n"
     files = os.listdir(path)
     for file in files:
         ext = file.split(".")
-        #print "ext: ", ext
         if len(ext) == 1:
             os.system("rm " + path + "/" +  file)
         elif ext[-1] == 'class' or ext[-1] == 'output':
-        #elif ext[-1] == 'class':
             os.system("rm " + path + "/" +  file)
 
 if __name__=='__main__':
